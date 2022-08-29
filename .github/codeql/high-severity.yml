@@ -2,6 +2,7 @@ name: "Custom CodeQL Config for high/very high severity only"
 disable-default-queries: true
 queries:
   - uses: security-extended
+query-filters:
   - include:
       tags contain: security
       problem.severity:
