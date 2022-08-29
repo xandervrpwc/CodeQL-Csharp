@@ -5,6 +5,4 @@ queries:
 query-filters:
   - include:
       tags contain: security
-      problem.severity:
-      - high
-      - very-high
+      security-severity: /([7-9]|10)\.(\d)+:/
