@@ -17,16 +17,10 @@ jobs:
       with:
         languages: csharp
         config-file: ./.github/codeql/low-precision.yml
-        # queries: security-extended,security-and-quality
+        debug: true
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
-
-    - name: Create SARIF artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: SARIF
-        path: results/csharp.sarif
