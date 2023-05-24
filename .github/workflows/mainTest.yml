@@ -1,4 +1,4 @@
-name: CodeQL Analysis Csharp
+name: CodeQL Analysis Csharp test
 
 on:
   push:
