@@ -1,2 +1,3 @@
 ./codeql/csharp/class.ql,class
 ./codeql/csharp/method.ql,method
+./codeql/csharp/comment.ql,comment
