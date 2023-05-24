@@ -1,0 +1,54 @@
+name: CodeQL Analysis Python
+
+on:
+  push:
+    branches:
+      - masters
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Download and extract CodeQL CLI bundle
+        run: |
+          wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz
+          tar -xvzf codeql-bundle-linux64.tar.gz
+      - name: Add CodeQL CLI to PATH
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        run: echo "::add-path::$(pwd)/codeql:$PATH"
+
+      - name: Run batch queries
+        run: |
+          # Generate the CodeQL database
+          codeql database create my-database --language=csharp --source-root=./
+          # Read the queries from queries.txt and execute them
+          while IFS=, read -r query output; do
+            codeql query run "$query" --database=my-database --output="$output.bqrs"
+            codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
+          done < ./codeql/queries.txt
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.x
+
+      - name: Transform JSON
+        run: python ./codeql/transform.py data.json functionname.json import.json
+
+      - name: Show JSON
+        run: cat data.json
+
+      - name: Echo commit message
+        run: echo "${{ github.event.head_commit.message }}"
+
+#       - name: Upload artifact
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: transformed-json
+#           path: data.json
