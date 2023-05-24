@@ -1,0 +1,3 @@
+./codeql/csharpTest/class.ql,class
+./codeql/csharpTest/method.ql,method
+./codeql/csharpTest/comment.ql,comment
