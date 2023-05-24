@@ -1,9 +1,9 @@
 /**
- * @name comments
+ * @name commentlines
  */
 
  import csharp
 
- from File f, CommentBlock cb
+ from File f, CommentLine cl
  where f.fromSource()
- select f.getBaseName() as filename, cb as code
+ select f.getBaseName() as filename, cl.getText() as code
