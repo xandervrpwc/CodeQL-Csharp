@@ -3,7 +3,7 @@ name: CodeQL Analysis Csharp
 on:
   push:
     branches:
-      - masters
+      - main
 
 jobs:
   analyze:
