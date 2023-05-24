@@ -1,0 +1,2 @@
+./codeql/csharp/functionnames.ql,functionname
+./codeql/csharp/imports.ql,import
