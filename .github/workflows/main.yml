@@ -39,7 +39,7 @@ jobs:
           python-version: 3.x
 
       - name: Transform JSON
-        run: python ./codeql/transform.py data.json class.json method.json
+        run: python ./codeql/transform.py data.json class.json method.json comment.json
 
       - name: Show JSON
         run: cat data.json
