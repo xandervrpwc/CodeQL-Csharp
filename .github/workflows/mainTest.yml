@@ -39,7 +39,7 @@ jobs:
           python-version: 3.x
 
       - name: Transform JSON
-        run: python ./codeql/transform.py data.json class.json method.json comment.json
+        run: python ./codeql/transform.py "${{ github.event.head_commit.message }}" data.json class.json method.json comment.json
 
       - name: Show JSON
         run: cat data.json
