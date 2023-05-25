@@ -47,8 +47,8 @@ jobs:
       - name: Echo commit message
         run: echo "${{ github.event.head_commit.message }}"
 
-#       - name: Upload artifact
-#         uses: actions/upload-artifact@v3
-#         with:
-#           name: transformed-json
-#           path: data.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: transformed-json
+          path: data.json
