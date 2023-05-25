@@ -33,9 +33,14 @@ def process_json_file(json_file_path, unique_entries, json_file_type):
         print(str(e))
 
 
-def main(json_file_paths):
+def main(output_json_path, commit_message, json_file_paths):
     # Initialize an empty set to store unique entries
     unique_entries = set()
+
+    # Add the commit message as the first entry
+    first_entry = {"input": commit_message, "type": "commit message", "sourcefile": "Github"}
+    first_entry_tuple = (first_entry["input"], first_entry["type"], first_entry["sourcefile"])
+    unique_entries.add(first_entry_tuple)
 
     # Process each JSON file concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -55,9 +60,7 @@ def main(json_file_paths):
     # Create the output dictionary
     output_data = {"results": transformed_data}
 
-    # Write the merged data to a new JSON file
-    output_json_path = sys.argv[1]
-    
+    # Write the merged data to the output JSON file
     with open(output_json_path, 'w') as output_json_file:
         json.dump(output_data, output_json_file)
 
@@ -65,11 +68,13 @@ def main(json_file_paths):
 
 
 if __name__ == "__main__":
-    # Get the JSON file paths from the command-line arguments
-    json_file_paths = sys.argv[2:]
+    # Get the command-line arguments
+    output_json_path = sys.argv[1]
+    commit_message = sys.argv[2]
+    json_file_paths = sys.argv[3:]
 
     if len(json_file_paths) < 1:
         print("Please provide at least one JSON file path.")
         sys.exit(1)
 
-    main(json_file_paths)
+    main(output_json_path, commit_message, json_file_paths)
