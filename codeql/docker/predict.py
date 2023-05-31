@@ -90,4 +90,4 @@ plt.text(0.5, -0.39, confidence_labels[1], horizontalalignment='center', vertica
 plt.title('Sensitive vs. Non-sensitive Code')
 
 # Save the bar chart as a PNG file
-plt.savefig('predicted_results.png')
+plt.savefig('/app/prediction_results.png')
