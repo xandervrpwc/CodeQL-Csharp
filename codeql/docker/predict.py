@@ -37,7 +37,7 @@ code_ql_frame['type'].replace('import',3,inplace=True)
 code_ql_frame['type'].replace('commit message',4,inplace=True)
 
 # prepare input data
-input_data = code_ql_frame['input'] + code_ql_frame['sourcefile']
+input_data = code_ql_frame['input'] + ' ' + code_ql_frame['sourcefile']
 # Preprocess the input data
 X_test = np.concatenate((vectorizer.transform(input_data).toarray(), code_ql_frame['type'].values.reshape(-1, 1)), axis=1) 
 
