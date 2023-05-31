@@ -62,13 +62,32 @@ results_df.to_csv('/app/prediction_results.csv')
 # Count the frequency of predicted labels
 label_counts = results_df['Predicted Label'].value_counts()
 
+# Calculate the percentages and confidence values
+input_len = len(results_df)
+non_sensitive_len = len(results_df[results_df['Predicted Label'] == 'not sensitive'])
+non_sensitive_code_percentage = non_sensitive_len * 100 / input_len
+sensitive_code_percentage = 100 - non_sensitive_code_percentage
+average_confidence_non_sensitive = results_df['Confidence'][results_df['Predicted Label'] == 'not sensitive'].mean()
+average_confidence_sensitive = results_df['Confidence'][results_df['Predicted Label'] != 'not sensitive'].mean()
 
-# Create the bar chart
-plt.figure(figsize=(10, 6))
-plt.bar(label_counts.index, label_counts.values)
-plt.xlabel('Predicted Labels')
-plt.ylabel('Frequency')
-plt.title('Frequency of Predicted Labels')
+# Create a pie chart with the percentages
+labels = ['Sensitive Code', 'Non-sensitive Code']
+sizes = [sensitive_code_percentage, non_sensitive_code_percentage]
+colors = ['#ff7f0e', '#1f77b4']
+
+plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+plt.axis('equal')  # Equal aspect ratio ensures the circle shape
+
+# Add labels for the confidence levels under each label
+confidence_labels = [
+    f'Confidence: {average_confidence_sensitive:.2f}%',
+    f'Confidence: {average_confidence_non_sensitive:.2f}%'
+]
+plt.text(-0.5, 0.18, confidence_labels[0], horizontalalignment='center', verticalalignment='center', fontsize=9)
+plt.text(0.5, -0.39, confidence_labels[1], horizontalalignment='center', verticalalignment='center', fontsize=9)
+
+# Set the title and display the plot
+plt.title('Sensitive vs. Non-sensitive Code')
 
 # Save the bar chart as a PNG file
-plt.savefig('/app/predicted_results.png')
+plt.savefig('predicted_results.png')
