@@ -29,6 +29,13 @@ json_data = pd.read_json('/data.json')
 # Extract "results" column as DataFrame
 code_ql_frame = pd.DataFrame(json_data['results'].tolist(), columns=['input', 'sourcefile','type'])
 
+#replace string values of types to numerical
+code_ql_frame['type'].replace('method',0, inplace=True) 
+code_ql_frame['type'].replace('comment',1,inplace=True) 
+code_ql_frame['type'].replace('class',2,inplace=True) 
+code_ql_frame['type'].replace('import',3,inplace=True) 
+code_ql_frame['type'].replace('commit message',4,inplace=True)
+
 # prepare input data
 input_data = code_ql_frame['input'] + code_ql_frame['sourcefile']
 # Preprocess the input data
