@@ -85,7 +85,7 @@ jobs:
             sh -c "cp /data/data.json / && \
               python /data/predict.py && \
               cp /app/prediction_results.csv /root/prediction_results.csv && \
-              cp /root/prediction_results.png /root/prediction_results.png"
+              cp /app/prediction_results.png /root/prediction_results.png"
       - name: Copy prediction results files to artifacts directory
         run: |
           if [ -f /root/prediction_results.csv ]; then
