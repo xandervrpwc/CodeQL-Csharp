@@ -84,8 +84,8 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/pwc_classifier:v1.4 \
             sh -c "cp /data/data.json / && \
               python /data/predict.py && \
-              cp /app/prediction_results.csv /root/prediction_results.csv
-      - name: Copy prediction results files to artifacts directory
+              cp /app/prediction_results.csv /root/prediction_results.csv"
+      - name: Copy prediction_results.csv to artifacts directory
         run: |
           if [ -f /root/prediction_results.csv ]; then
             cp /root/prediction_results.csv .
@@ -95,7 +95,4 @@ jobs:
         with:
           name: prediction
           if-no-files-found: warn
-          path: |
-            prediction_results.csv
-
-          
+          path: prediction_results.csv
