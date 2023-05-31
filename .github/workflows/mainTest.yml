@@ -12,8 +12,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-#        with:
-#          ref: ${{ github.sha }}
+        with:
+         ref: ${{ github.sha }}
+
+      - name: List changed files
+        run: |
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
+          cat changed_files.txt
 
       - name: Download and extract CodeQL CLI bundle
         run: |
