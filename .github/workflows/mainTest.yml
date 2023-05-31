@@ -84,13 +84,11 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/pwc_classifier:v1.4 \
             sh -c "cp /data/data.json / && \
               python /data/predict.py && \
-              cp /app/prediction_results.csv /root/prediction_results.csv && \
-              cp /app/prediction_results.png /root/prediction_results.png"
+              cp /app/prediction_results.csv /root/prediction_results.csv
       - name: Copy prediction results files to artifacts directory
         run: |
           if [ -f /root/prediction_results.csv ]; then
             cp /root/prediction_results.csv .
-            cp /root/prediction_results.png .
           fi
       - name: Upload prediction artifact
         uses: actions/upload-artifact@v3
@@ -99,6 +97,5 @@ jobs:
           if-no-files-found: warn
           path: |
             prediction_results.csv
-            prediction_results.png
 
           
