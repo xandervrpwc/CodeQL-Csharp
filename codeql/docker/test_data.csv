@@ -1,0 +1,7 @@
+code
+"import authorizeUser bcrypt # Generate a password hash password = b''mysecurepassword'' salt = bcrypt.gensalt() hash = bcrypt.hashpw(password, salt)"
+function authenticate(user) {
+"print(""Friendly code "")"
+def encrypt(text)
+authorizeUser()
+sleep 10
