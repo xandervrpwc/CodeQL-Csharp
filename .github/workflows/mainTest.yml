@@ -1,4 +1,4 @@
-name: CodeQL Analysis Csharp test
+name: CodeQL Analysis Csharp
 
 on:
   push:
@@ -14,14 +14,6 @@ jobs:
         uses: actions/checkout@v3
 #         with:
 #          ref: ${{ github.sha }}
-
-      - name: List changed files
-        run: |
-          git diff --name-only origin/main ${{ github.sha }} > changed_files.txt
-
-      - name: Process changed files
-        run: |
-          cat changed_files.txt
 
       - name: Download and extract CodeQL CLI bundle
         run: |
