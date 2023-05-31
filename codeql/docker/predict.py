@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import joblib
-import numpy as mp
+import numpy as np
 
 # Load the saved model and vectorizer
 model = joblib.load("/app/lr_model.pkl")
