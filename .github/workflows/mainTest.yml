@@ -17,7 +17,7 @@ jobs:
 
       - name: Download and extract CodeQL CLI bundle
         run: |
-          curl -L -o codeql-bundle.tar.gz https://github.com/github/codeql-action/releases/2.13.0/download/codeql-bundle-linux64.tar.gz
+          curl -L -o codeql-bundle.tar.gz https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz
           tar xvf codeql-bundle.tar.gz
       
 #       - name: Add CodeQL CLI to PATH
