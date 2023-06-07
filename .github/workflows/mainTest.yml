@@ -22,38 +22,20 @@ jobs:
           tar xvf codeql-bundle.tar.gz
           echo "{environment_variable_name}={value}" >> "$GITHUB_ENV"
       
-#       - name: Add CodeQL CLI to PATH
-#         env:
-#           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-#         run: echo "::add-path::$(pwd)/codeql:$PATH"
       - name: Add CodeQL CLI to PATH
-        run: |
-          echo "CODEQL_CLI=$(pwd)/codeql" >> $GITHUB_ENV
-          echo "PATH=$(pwd)/codeql:\$PATH" >> $GITHUB_ENV
-
-      - name: Generate the CodeQL database
-        run: |
-          os=$(echo "$OSTYPE" | sed 's/[^[:alnum:]]//g' | awk '{print tolower($0)}')
-          codeql database create my-database --language=csharp --source-root=./ --search-path="/usr/lib/codeql-${os}"
-
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        run: echo "::add-path::$(pwd)/codeql:$PATH"
 
       - name: Run batch queries
         run: |
-          # Read the queries from queriesTest.txt and execute them
+          # Generate the CodeQL database
+          codeql database create my-database --language=csharp --source-root=./
+          # Read the queries from queries.txt and execute them
           while IFS=, read -r query output; do
             codeql query run "$query" --database=my-database --output="$output.bqrs"
             codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
           done < ./codeql/queriesTest.txt
-
-#       - name: Run batch queries
-#         run: |
-#           # Generate the CodeQL database
-#           codeql database create my-database --language=csharp --source-root=./
-#           # Read the queries from queries.txt and execute them
-#           while IFS=, read -r query output; do
-#             codeql query run "$query" --database=my-database --output="$output.bqrs"
-#             codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
-#           done < ./codeql/queriesTest.txt
 
       - name: Set up Python
         uses: actions/setup-python@v3
