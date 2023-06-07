@@ -31,17 +31,28 @@ jobs:
           echo "CODEQL_CLI=$(pwd)/codeql" >> $GITHUB_ENV
           echo "PATH=$(pwd)/codeql:\$PATH" >> $GITHUB_ENV
 
-
+      - name: Generate the CodeQL database
+        run: |
+          os=$(echo $OSTYPE | tr '[:upper:]' '[:lower:]')
+          codeql database create my-database --language=csharp --source-root=./ --search-path=/usr/lib/codeql-${os}
 
       - name: Run batch queries
         run: |
-          # Generate the CodeQL database
-          codeql database create my-database --language=csharp --source-root=./
-          # Read the queries from queries.txt and execute them
+          # Read the queries from queriesTest.txt and execute them
           while IFS=, read -r query output; do
             codeql query run "$query" --database=my-database --output="$output.bqrs"
             codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
           done < ./codeql/queriesTest.txt
+
+#       - name: Run batch queries
+#         run: |
+#           # Generate the CodeQL database
+#           codeql database create my-database --language=csharp --source-root=./
+#           # Read the queries from queries.txt and execute them
+#           while IFS=, read -r query output; do
+#             codeql query run "$query" --database=my-database --output="$output.bqrs"
+#             codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
+#           done < ./codeql/queriesTest.txt
 
       - name: Set up Python
         uses: actions/setup-python@v3
