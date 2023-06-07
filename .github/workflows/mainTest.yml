@@ -17,12 +17,17 @@ jobs:
 
       - name: Download and extract CodeQL CLI bundle
         run: |
-          wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz
-          tar -xvzf codeql-bundle-linux64.tar.gz
+          curl -L -o codeql-bundle.tar.gz https://github.com/github/codeql-action/releases/download/codeql-bundle-2.13.0/codeql-bundle-linux64.tar.gz
+          tar xvf codeql-bundle.tar.gz
+      
+#       - name: Add CodeQL CLI to PATH
+#         env:
+#           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+#         run: echo "::add-path::$(pwd)/codeql:$PATH"
+
       - name: Add CodeQL CLI to PATH
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         run: echo "::add-path::$(pwd)/codeql:$PATH"
+        shell: bash
 
       - name: Run batch queries
         run: |
@@ -33,6 +38,7 @@ jobs:
             codeql query run "$query" --database=my-database --output="$output.bqrs"
             codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
           done < ./codeql/queriesTest.txt
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -86,12 +92,14 @@ jobs:
               python /data/predict.py && \
               cp /app/prediction_results.csv /root/prediction_results.csv && \
               cp /app/prediction_results.png /root/prediction_results.png"
+              
       - name: Copy prediction results files to artifacts directory
         run: |
           if [ -f /root/prediction_results.csv ]; then
             cp /root/prediction_results.csv .
             cp /root/prediction_results.png .
           fi
+          
       - name: Upload prediction artifact
         uses: actions/upload-artifact@v3
         with:
