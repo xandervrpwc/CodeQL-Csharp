@@ -29,6 +29,8 @@ jobs:
       - name: Add CodeQL CLI to PATH
         run: |
           echo "CODEQL_CLI=$(pwd)/codeql" >> $GITHUB_ENV
+          echo "PATH=${{ env.CODEQL_CLI }}:$PATH" >> $GITHUB_ENV
+
 
       - name: Run batch queries
         run: |
