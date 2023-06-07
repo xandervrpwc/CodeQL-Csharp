@@ -33,8 +33,9 @@ jobs:
 
       - name: Generate the CodeQL database
         run: |
-          os=$(echo $OSTYPE | tr '[:upper:]' '[:lower:]')
-          codeql database create my-database --language=csharp --source-root=./ --search-path=/usr/lib/codeql-${os}
+          os=$(echo "$OSTYPE" | sed 's/[^[:alnum:]]//g' | awk '{print tolower($0)}')
+          codeql database create my-database --language=csharp --source-root=./ --search-path="/usr/lib/codeql-${os}"
+
 
       - name: Run batch queries
         run: |
