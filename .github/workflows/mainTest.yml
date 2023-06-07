@@ -8,6 +8,7 @@ on:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    
 
     steps:
       - name: Checkout code
@@ -19,15 +20,15 @@ jobs:
         run: |
           curl -L -o codeql-bundle.tar.gz https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz
           tar xvf codeql-bundle.tar.gz
+          echo "{environment_variable_name}={value}" >> "$GITHUB_ENV"
       
 #       - name: Add CodeQL CLI to PATH
 #         env:
 #           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 #         run: echo "::add-path::$(pwd)/codeql:$PATH"
-
       - name: Add CodeQL CLI to PATH
-        run: echo "::add-path::$(pwd)/codeql:$PATH -n ${{ github.token }}"
-        shell: bash
+        run: |
+          echo "CODEQL_CLI=$(pwd)/codeql" >> $GITHUB_ENV
 
       - name: Run batch queries
         run: |
