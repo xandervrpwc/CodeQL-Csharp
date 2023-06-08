@@ -23,6 +23,11 @@ jobs:
             echo "  <file>$filename</file>" >> committed_files.xml
           done < filenames.txt
           echo "</files>" >> committed_files.xml
+          
+      - name: Download and extract CodeQL CLI bundle
+        run: |
+          cat filenames.txt
+          cat comitted_files.txt
 
       - name: Download and extract CodeQL CLI bundle
         run: |
