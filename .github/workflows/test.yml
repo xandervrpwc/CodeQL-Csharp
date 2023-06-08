@@ -63,7 +63,7 @@ jobs:
           while IFS=, read -r query output; do
             codeql query run "$query" --database=mydb --output="$output.bqrs"
             codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
-          done < ./codeql/queriesTest.txt
+          done < ./codeql/queries.txt
 
       - name: Set up Python
         uses: actions/setup-python@v3
