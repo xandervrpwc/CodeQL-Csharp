@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.sha }}
+          ref: 7c9ef45774aa31828f32ca3b3908948f438cdc71
 
       - name: Create XML file
         run: |
