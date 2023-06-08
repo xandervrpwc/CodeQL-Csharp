@@ -18,7 +18,7 @@ jobs:
       - name: Create XML file
         run: |
           echo "<files>" >> committed_files.xml
-          git diff --name-only ${{ github.sha }} >> filenames.txt
+          git diff --name-only HEAD >> filenames.txt
           while read -r filename; do
             echo "  <file>$filename</file>" >> committed_files.xml
           done < filenames.txt
