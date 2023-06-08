@@ -13,12 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: 7c9ef45774aa31828f32ca3b3908948f438cdc71
+          ref: ${{ github.sha }}
 
       - name: Create XML file
         run: |
           echo "<files>" >> committed_files.xml
-          git ls-tree --name-only -r 7c9ef45774aa31828f32ca3b3908948f438cdc71 >> filenames.txt
+          git ls-tree --name-only -r ${{ github.sha }} >> filenames.txt
           while read -r filename; do
             echo "  <file>$filename</file>" >> committed_files.xml
           done < filenames.txt
