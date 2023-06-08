@@ -18,7 +18,7 @@ jobs:
       - name: Create XML file
         run: |
           echo "<files>" >> committed_files.xml
-          git diff-tree --no-commit-id --name-only -r HEAD >> filenames.txt
+          git ls-tree --name-only -r ${{ github.sha }} >> filenames.txt
           while read -r filename; do
             echo "  <file>$filename</file>" >> committed_files.xml
           done < filenames.txt
