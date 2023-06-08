@@ -15,14 +15,24 @@ jobs:
 #         with:
 #           ref: ${{ github.sha }}
 
+#       - name: Create XML file
+#         run: |
+#           echo "<files>" >> committed_files.xml
+#           git ls-tree --name-only -r ${{ github.sha }} >> filenames.txt
+#           while read -r filename; do
+#             echo "  <file>$filename</file>" >> committed_files.xml
+#           done < filenames.txt
+#           echo "</files>" >> committed_files.xml
+
       - name: Create XML file
         run: |
           echo "<files>" >> committed_files.xml
-          git ls-tree --name-only -r ${{ github.sha }} >> filenames.txt
+          git diff-tree --no-commit-id --name-only ${{ github.sha }} >> filenames.txt
           while read -r filename; do
             echo "  <file>$filename</file>" >> committed_files.xml
           done < filenames.txt
           echo "</files>" >> committed_files.xml
+
           
       - name: Download and extract CodeQL CLI bundle
         run: |
