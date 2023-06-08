@@ -46,6 +46,14 @@ jobs:
 
       - name: Finalize CodeQL database
         run: codeql database finalize mydb
+        
+      - name: Run batch queries
+        run: |
+          # Read the queries from queries.txt and execute them
+          while IFS=, read -r query output; do
+            codeql query run "$query" --database=mydb --output="$output.bqrs"
+            codeql bqrs decode --format=json --output="$output.json" "$output.bqrs"
+          done < ./codeql/queriesTest.txt
 
       - name: Set up Python
         uses: actions/setup-python@v3
