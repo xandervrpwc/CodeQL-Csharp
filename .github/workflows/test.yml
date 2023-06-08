@@ -27,7 +27,6 @@ jobs:
       - name: Download and extract CodeQL CLI bundle
         run: |
           cat filenames.txt
-          cat comitted_files.txt
 
       - name: Download and extract CodeQL CLI bundle
         run: |
