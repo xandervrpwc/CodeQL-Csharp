@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-#         with:
-#           ref: ${{ github.sha }}
+        with:
+          ref: ${{ github.sha }}
 
 #       - name: Create XML file
 #         run: |
