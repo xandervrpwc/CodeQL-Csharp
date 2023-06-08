@@ -37,9 +37,6 @@ jobs:
       - name: Initialize CodeQL database
         run: codeql database init --source-root=./ --language=csharp mydb
 
-      - name: Trace command
-        run: codeql database trace-command --working-dir=./ mydb
-
       - name: Index XML files
         run: codeql database index-files --language xml --include-extension .xml --working-dir=./ mydb
 
