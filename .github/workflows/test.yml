@@ -1,0 +1,117 @@
+name: CodeQL Analysis Csharp
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Create XML file
+        run: |
+          echo "<files>" >> committed_files.xml
+          git diff --name-only HEAD^ >> filenames.txt
+          while read -r filename; do
+            echo "  <file>$filename</file>" >> committed_files.xml
+          done < filenames.txt
+          echo "</files>" >> committed_files.xml
+
+      - name: Download and extract CodeQL CLI bundle
+        run: |
+          curl -L -o codeql-bundle.tar.gz https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz
+          tar xvf codeql-bundle.tar.gz
+
+      - name: Add CodeQL CLI to PATH
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        run: echo "::add-path::$(pwd)/codeql:$PATH"
+
+      - name: Initialize CodeQL database
+        run: codeql database init --source-root=./ --language=csharp mydb
+
+      - name: Trace command
+        run: codeql database trace-command --working-dir=./ mydb
+
+      - name: Index XML files
+        run: codeql database index-files --language xml --include-extension .xml --working-dir=./ mydb
+
+      - name: Finalize CodeQL database
+        run: codeql database finalize mydb
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.x
+
+      - name: Transform JSON
+        run: python ./codeql/transform.py data.json "${{ github.event.head_commit.message }}" class.json method.json comment.json
+
+      - name: Show JSON
+        run: cat data.json
+
+      - name: Echo commit message
+        run: echo "${{ github.event.head_commit.message }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: transformed-json
+          path: data.json
+          
+  build:
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts from analyze job
+        uses: actions/download-artifact@v3
+        with:
+          name: transformed-json
+          path: transformed-json
+
+      - name: Login to Docker Hub
+        run: docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull Docker image
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/pwc_classifier:v1.4
+
+      - name: Copy predict.py to transformed-json directory
+        run: cp ./codeql/docker/predict.py $PWD/transformed-json/
+
+      - name: Run Docker container
+        run: |
+          docker run -p 8080:80 \
+            -v $PWD/transformed-json:/data \
+            -w / \
+            -v $PWD:/root \
+            ${{ secrets.DOCKER_USERNAME }}/pwc_classifier:v1.4 \
+            sh -c "cp /data/data.json / && \
+              python /data/predict.py && \
+              cp /app/prediction_results.csv /root/prediction_results.csv && \
+              cp /app/prediction_results.png /root/prediction_results.png"
+              
+      - name: Copy prediction results files to artifacts directory
+        run: |
+          if [ -f /root/prediction_results.csv ]; then
+            cp /root/prediction_results.csv .
+            cp /root/prediction_results.png .
+          fi
+          
+      - name: Upload prediction artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: prediction
+          if-no-files-found: warn
+          path: |
+            prediction_results.csv
+            prediction_results.png
